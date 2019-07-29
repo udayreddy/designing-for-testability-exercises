@@ -2,41 +2,45 @@
 // Originally by GitHub#Liath
 // Based on IRS Circular E - http://www.irs.gov/pub/irs-pdf/p15.pdf
 // Per the "Percentage Method"
-var w = {
-    s: {
+
+const wages = {
+    single: {
       // Single
-      0: { p: 0, s: 0 },
-      44: { p: 0.1, s: 0 },
-      222: { p: 0.15, s: 17.8 },
-      764: { p: 0.25, s: 99.1 },
-      1789: { p: 0.28, s: 355.35 },
-      3685: { p: 0.33, s: 886.23 },
-      7958: { p: 0.35, s: 2296.32 },
-      7990: { p: 0.396, s: 2307.52 }
+      0: { percentage: 0, base: 0 },
+      44: { percentage: 0.1, base: 0 },
+      222: { percentage: 0.15, base: 17.8 },
+      764: { percentage: 0.25, base: 99.1 },
+      1789: { percentage: 0.28, base: 355.35 },
+      3685: { percentage: 0.33, base: 886.23 },
+      7958: { percentage: 0.35, base: 2296.32 },
+      7990: { percentage: 0.396, base: 2307.52 }
     },
-    m: {
+    married: {
       // Married
-      0: { p: 0, s: 0 },
-      165: { p: 0.1, s: 0 },
-      520: { p: 0.15, s: 35.5 },
-      1606: { p: 0.25, s: 198.4 },
-      3073: { p: 0.28, s: 565.15 },
-      4597: { p: 0.33, s: 991.87 },
-      8079: { p: 0.35, s: 2140.93 },
-      9105: { p: 0.396, s: 2500.03 }
+      0: { percentage: 0, base: 0 },
+      165: { percentage: 0.1, base: 0 },
+      520: { percentage: 0.15, base: 35.5 },
+      1606: { percentage: 0.25, base: 198.4 },
+      3073: { percentage: 0.28, base: 565.15 },
+      4597: { percentage: 0.33, base: 991.87 },
+      8079: { percentage: 0.35, base: 2140.93 },
+      9105: { percentage: 0.396, base: 2500.03 }
     }
   },
-  ba = 76.9, // 1 Allowance
-  c = function(m, a, g) {
-    // Returns Federal Income Tax amount (Married, Allowances, Gross Income)
-    g -= ba * a; // Pay after allowances
-    var b = Object.keys(w[m == 1 ? "m" : "s"]); //Married?
-    for (var i = 0; i < b.length; i++) {
+  baseAllowance = 76.9, // 1 Allowance
+  // Returns Federal Income Tax amount (Married, Allowances, Gross Income)
+  calulateTax = function(married, allowanceIncrement, grossIncome) {
+    grossIncome -= baseAllowance * allowanceIncrement; // Pay after allowances
+    const brackets = Object.keys(wages[married == true ? "married" : "single"]); //Married?
+    for (var i = 0; i < brackets.length; i++) {
       // Find bracket
-      if (b[i] > g) {
-        g -= b[i - 1]; // Get taxable income
-        b = w[m == 1 ? "m" : "s"][b[i - 1]]; // Set bracket
-        return b.p * g + b.s; // Taxable income * Tax Rate + Base Tax, per IRS Circular E table 5
+      if (brackets[i] > grossIncome) {
+        grossIncome -= brackets[i - 1]; // Get taxable income
+        const bracket =
+          wages[married == true ? "married" : "single"][brackets[i - 1]]; // Set bracket
+        return bracket.percentage * grossIncome + bracket.base; // Taxable income * Tax Rate + Base Tax, per IRS Circular E table 5
       }
     }
   };
+
+export { calulateTax };
