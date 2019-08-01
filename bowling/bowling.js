@@ -1,0 +1,3 @@
+const bowl = () => {};
+
+export { bowl };
