@@ -55,5 +55,4 @@ const calulateTax = function(married, allowanceIncrement, grossIncome) {
     const defaultBracket = wages[maritalStatus][brackets[brackets.length - 1]];
     return defaultBracket.percentage * (grossIncome - brackets[brackets.length - 1]) + defaultBracket.base;
 };
-
 export { calulateTax };
